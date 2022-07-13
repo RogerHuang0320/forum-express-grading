@@ -7,27 +7,103 @@
       <div class="card-body">
         <h2 class="card-title">{{targetUser.name}}</h2>
         <p class="card-text mt-4">{{targetUser.email}}</p>
-        <p class="card-text mt-4">已評論{{targetUser.Comments.length}}間餐廳</p>
+
+        <ul class="list-unstyled list-inline">
+          <li>已評論{{targetUser.Comments.length}}間餐廳</li>
+          <li>{{targetUser.FavoritedRestaurants.length}} 已收藏餐廳</li>
+          <li>{{targetUser.Followings.length}} 人追蹤中 (followings)</li>
+          <li>{{targetUser.Followers.length}} 位粉絲 (followers)</li>
+        </ul>
+
         {{#ifCond targetUser.id user.id}}
         <a class="btn btn-primary" href="/users/{{targetUser.id}}/edit">Edit</a>
         {{/ifCond}}
+        {{#if this.isFollowed }}
+        <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">取消追蹤</button>
+        </form>
+        {{else}}
+        <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">追蹤</button>
+        </form>
+        {{/if}}
       </div>
     </div>
   </div>
-  <div class="card mt-5">
-    <div class="card-header">
-      {{#if targetUser.Comments.length}}
-      已評論{{targetUser.Comments.length}}間餐廳
-      {{else}}
-      尚未評論餐廳
-      {{/if}}
-      <div class="card-body" style="min-height: 100px;">
-        {{#each targetUser.Comments}}
-        <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
-          <img src="{{this.Restaurant.image}}" class=" center-block img-responsive img-thumbnail m-2"
-            style="width: 80px; height:80px" alt="restaurant-image">
-        </a>
-        {{/each}}
+
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <strong>{{targetUser.Followings.length}} 人追蹤中 (followings)</strong>
+        </div>
+        <div class="card-body">
+          {{#each targetUser.Followings}}
+          <a href="/users/{{this.id}}" class="text-decoration-none">
+            {{#if this.image}}
+            <img src="{{this.image}}" width="70" height="70" class="avatar p-1"
+              style="transition: opacity 0.5s; opacity:0; border-radius:50%;" onload="this.style.opacity=1;" />
+            {{else}}
+            <img src="https://via.placeholder.com/70" width="70" height="70" class="avatar p-1"
+              style="transition: opacity 0.5s; opacity:0; border-radius:50%;" onload="this.style.opacity=1;" />
+            {{/if}}
+          </a>
+          {{/each}}
+        </div>
+      </div>
+      <br />
+      <div class="card">
+        <div class="card-header">
+          <strong>{{user.Followers.length}} 位粉絲 (followers)</strong>
+        </div>
+        <div class="card-body">
+          {{#each user.Followers}}
+          <a href="/users/{{this.id}}" class="text-decoration-none">
+            {{#if this.image}}
+            <img src="{{this.image}}" width="70" height="70" class="avatar p-1"
+              style="transition: opacity 0.5s; opacity:0; border-radius:50%;" onload="this.style.opacity=1;" />
+            {{else}}
+            <img src="https://via.placeholder.com/70" width="60" height="60" class="avatar p-1"
+              style="transition: opacity 0.5s; opacity:0; border-radius:50%;" onload="this.style.opacity=1;" />
+            {{/if}}
+          </a>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          {{#if targetUser.Comments.length}}
+          已評論{{targetUser.Comments.length}}間餐廳
+          {{else}}
+          尚未評論餐廳
+          {{/if}}
+          <div class="card-body" style="min-height: 100px;">
+            {{#each targetUser.Comments}}
+            <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+              <img src="{{this.Restaurant.image}}" class=" center-block img-responsive img-thumbnail m-2"
+                style="width: 80px; height:80px" alt="restaurant-image">
+            </a>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="card">
+        <div class="card-header">
+          <strong>{{user.FavoritedRestaurants.length}} 收藏的餐廳</strong>
+        </div>
+        <div class="card-body">
+          {{#each user.FavoritedRestaurants}}
+          <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+            <img src="{{this.image}}" width="70" height="70" class="avatar p-1"
+              style="transition: opacity 0.5s; opacity:0; border-radius:50%;" onload="this.style.opacity=1;" />
+          </a>
+          {{/each}}
+        </div>
       </div>
     </div>
   </div>
